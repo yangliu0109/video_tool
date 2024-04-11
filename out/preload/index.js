@@ -1,7 +1,11 @@
 "use strict";
 const electron = require("electron");
 const preload = require("@electron-toolkit/preload");
-const api = {};
+const api = {
+  compress: (options) => {
+    electron.ipcRenderer.invoke("compress", options);
+  }
+};
 if (process.contextIsolated) {
   try {
     electron.contextBridge.exposeInMainWorld("electron", preload.electronAPI);
@@ -13,4 +17,3 @@ if (process.contextIsolated) {
   window.electron = preload.electronAPI;
   window.api = api;
 }
-//# sourceMappingURL=index.js.map
