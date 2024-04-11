@@ -17,3 +17,4 @@ if (process.contextIsolated) {
   window.electron = preload.electronAPI;
   window.api = api;
 }
+//# sourceMappingURL=index.js.map

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, ref} from 'vue'
 import useConfigStroe from '@renderer/store/useConfigStroe';
-import useVideo from '@renderer/composables/useVides';
+import useFps from '@renderer/composables/useFps';
 import DataType from '@renderer/types';
 import {CloseOne} from '@icon-park/vue-next';
 
@@ -17,7 +17,7 @@ const list = computed(() => {
   return props.type == 'size' ? config.sizes : config.frames
 })
 
-const {add, newValue, remove} = useVideo();
+const {add, newValue, remove} = useFps();
 </script>
 
 <template>
@@ -43,4 +43,4 @@ const {add, newValue, remove} = useVideo();
   .delIcon {
     @apply text-slate-300 hover:text-red-500 hover:scale-125 cursor-pointer duration-300
   }
-</style>
+</style>@renderer/composables/useFps

@@ -1,21 +1,39 @@
 "use strict";
 const electron = require("electron");
-const path = require("path");
+const path$1 = require("path");
 const utils = require("@electron-toolkit/utils");
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg");
 const ffmpeg = require("fluent-ffmpeg");
 const ffprobePath = require("@ffprobe-installer/ffprobe");
-const icon = path.join(__dirname, "../../resources/icon.png");
+const icon = path$1.join(__dirname, "../../resources/icon.png");
+const path = require("path");
 ffmpeg.setFfmpegPath(ffmpegPath.path);
 ffmpeg.setFfprobePath(ffprobePath.path);
-electron.ipcMain.handle("compress", (_event, options) => {
-  ffmpeg(options.file).videoCodec("libx264").audioCodec("libmp3lame").fps(options.fps).size(options.size).on("error", function(err) {
-    console.log("An error occurred: " + err.message);
-  }).on("end", function() {
-    console.log("Processing finished !");
-  }).on("progress", function(progress) {
+class Ffmpeg {
+  constructor(_event, options) {
+    this._event = _event;
+    this.options = options;
+    this.ffmpeg = ffmpeg(this.options.file.path);
+  }
+  ffmpeg;
+  processEvent(progress) {
     console.log("Processing: " + progress.percent + "% done");
-  }).save("C:\\Users\\njsy\\Videos\\aaa.mp4");
+  }
+  error(err) {
+    console.log("An error occurred: " + err.message);
+  }
+  end() {
+    console.log("Processing finished !");
+  }
+  run() {
+    console.log(this.options);
+    this.ffmpeg.fps(this.options.fps).size(this.options.size).videoCodec("libx264").on("error", this.error.bind(this)).on("end", this.end.bind(this)).on("progress", this.processEvent.bind(this)).save(path.resolve(__dirname, "../../hd-finish.mp4"));
+  }
+}
+electron.ipcMain.handle("compress", async (_event, options) => {
+  console.log(options);
+  const compress = new Ffmpeg(_event, options);
+  compress.run();
 });
 function createWindow() {
   const mainWindow = new electron.BrowserWindow({
@@ -30,7 +48,7 @@ function createWindow() {
     y: 10,
     ...process.platform === "linux" ? { icon } : {},
     webPreferences: {
-      preload: path.join(__dirname, "../preload/index.js"),
+      preload: path$1.join(__dirname, "../preload/index.js"),
       sandbox: false
     }
   });
@@ -44,7 +62,7 @@ function createWindow() {
   if (utils.is.dev && process.env["ELECTRON_RENDERER_URL"]) {
     mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"]);
   } else {
-    mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
+    mainWindow.loadFile(path$1.join(__dirname, "../renderer/index.html"));
   }
 }
 electron.app.whenReady().then(() => {
@@ -64,3 +82,4 @@ electron.app.on("window-all-closed", () => {
     electron.app.quit();
   }
 });
+//# sourceMappingURL=index.js.map
