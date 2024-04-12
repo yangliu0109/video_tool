@@ -1,14 +1,15 @@
 import { ElMessageBox, UploadRequestOptions } from 'element-plus';
 import useConfigStroe from '@renderer/store/useConfigStroe';
+import { VideoState, VideoType } from '@renderer/types';
 
 
-export default () => {
+export default () => { 
     
     const {config} = useConfigStroe()
     const addFile = (options: UploadRequestOptions) => {
         const name = options.file.name
         const path = options.file.path
-        config.files.push({name, path, progress: 30, finish: false})
+        config.files.push({name, path, progress: 0, state: VideoState.READY})
     }
 
     const remove = async (index:number) => {
@@ -24,5 +25,13 @@ export default () => {
     const removeAll = () => {
         config.files = []
     }
-    return {addFile, remove, removeAll}
+
+    const bgColor = (video: VideoType) => {
+        return {
+          [VideoState.RUN]: '#F9F871',
+          [VideoState.ERROR]: '#F3A683',
+          [VideoState.FINNISH]: '#4FFBDF'
+        } [video.state]
+      }
+    return {addFile, remove, removeAll,bgColor}
 }

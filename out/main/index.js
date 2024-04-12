@@ -14,10 +14,12 @@ class Ffmpeg {
     this._event = _event;
     this.options = options;
     this.ffmpeg = ffmpeg(this.options.file.path);
+    this.window = electron.BrowserWindow.fromWebContents(this._event.sender);
   }
   ffmpeg;
+  window;
   processEvent(progress) {
-    console.log("Processing: " + progress.percent + "% done");
+    this.window.webContents.send("progressNotice", progress.percent);
   }
   error(err) {
     console.log("An error occurred: " + err.message);
@@ -25,15 +27,27 @@ class Ffmpeg {
   end() {
     console.log("Processing finished !");
   }
+  getSaveFilePath() {
+    const info = path.parse(this.options.file.name);
+    return path.join(this.options.saveDirectory, info.name + "_" + this.options.size + "_" + this.options.fps + info.ext);
+  }
   run() {
-    console.log(this.options);
-    this.ffmpeg.fps(this.options.fps).size(this.options.size).videoCodec("libx264").on("error", this.error.bind(this)).on("end", this.end.bind(this)).on("progress", this.processEvent.bind(this)).save(path.resolve(__dirname, "../../hd-finish.mp4"));
+    this.ffmpeg.fps(this.options.fps).size(this.options.size).videoCodec("libx264").on("error", this.error.bind(this)).on("end", this.end.bind(this)).on("progress", this.processEvent.bind(this)).save(this.getSaveFilePath());
   }
 }
+const selectDirectory = async () => {
+  const res = await electron.dialog.showOpenDialog({
+    title: "选择文件夹",
+    properties: ["openDirectory", "createDirectory"]
+  });
+  return res.canceled === false ? res.filePaths[0] : "";
+};
 electron.ipcMain.handle("compress", async (_event, options) => {
-  console.log(options);
   const compress = new Ffmpeg(_event, options);
   compress.run();
+});
+electron.ipcMain.handle("selectDirectory", async (_event) => {
+  return selectDirectory();
 });
 function createWindow() {
   const mainWindow = new electron.BrowserWindow({
@@ -82,4 +96,3 @@ electron.app.on("window-all-closed", () => {
     electron.app.quit();
   }
 });
-//# sourceMappingURL=index.js.map

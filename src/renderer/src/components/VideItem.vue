@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import {CloseOne} from '@icon-park/vue-next';
-import {VideoType} from '@renderer/types';
-import { ref } from 'vue';
+import {VideoState, VideoType} from '@renderer/types';
+import { computed, ref } from 'vue';
 import useVideo from '@renderer/composables/useVideo'
 
 const {video} = defineProps<{video: VideoType, index:number}>()
-const { remove } = useVideo()
+const { remove, bgColor } = useVideo()
+
+
 </script>
 
 <template>
   <main>
-    <section class="video" :style="`--process:${video.progress}%`">
+    <section class="video" :style="`--process:${video.progress}%;--bgColor:${bgColor(video)}`">
      <div class="title z-10">{{ video.name }} </div>
      <div class="icon">
 
@@ -27,8 +29,9 @@ const { remove } = useVideo()
 
 .video::before {
   content:'';
-  @apply bg-yellow-400 absolute top-0 bottom-0 left-0 right-0 z-0 rounded-lg;
-  width: var(--process)
+  @apply bg-yellow-500 absolute top-0 bottom-0 left-0 right-0 z-0 rounded-lg;
+  width: var(--process);
+  /* background-color: var(--bgColor) */
 }
 
 .icon {

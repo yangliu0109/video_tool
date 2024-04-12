@@ -7,8 +7,20 @@ export default () => {
     const newValue = ref('')
     const { config } = useConfigStroe()
     const add = (type: DataType) => {
+        let message = ''
+        switch(type) {
+            case 'size': {
+                if(!/^\d+x\d+$/.test(newValue.value)) message = '分辨率尺寸错误'
+                break;
+            }
+            case 'frame': {
+                if(!/^\d+$/.test(newValue.value)) message = '帧数错误'
+                break;
+            }
+        }
+        if(message) ElMessage.error({grouping: true, message})
+        else  ElMessage({message: '添加成功', type: 'success', grouping: true})
         config[type == 'size' ? 'sizes' : 'frames'].push(newValue.value)
-        ElMessage({message: '添加成功', type: 'success', grouping: true})
         newValue.value = ''
     }
 

@@ -1,10 +1,24 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { IpcRendererEvent, contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import {CompressOptions} from '../main/ffmpeg'
+import { CompressOptions } from '@/renderer/types'
+
 // Custom APIs for renderer
 const api = {
   compress: (options: CompressOptions) => {
     ipcRenderer.invoke('compress', options)
+  },
+  selectDirectory: () => {
+    return ipcRenderer.invoke('selectDirectory')
+  },
+  // progressNotice: (callback: (prgress: number) => void) => {
+  //   ipcRenderer.on('progressNotice', (_event: IpcRendererEvent, prgress: number) => {
+  //     callback(prgress)
+  //   })
+  // }
+  mainProcessNotice: (callback: (type: 'end' | 'progress' | 'error', options: any) => void) => {
+    ipcRenderer.on('mainProcessNotice', (_event: IpcRendererEvent, type: 'end' | 'progress' | 'error', options: any) => {
+      callback(type, options)
+    })
   }
 }
 

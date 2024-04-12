@@ -4,6 +4,14 @@ const preload = require("@electron-toolkit/preload");
 const api = {
   compress: (options) => {
     electron.ipcRenderer.invoke("compress", options);
+  },
+  selectDirectory: () => {
+    return electron.ipcRenderer.invoke("selectDirectory");
+  },
+  progressNotice: (callback) => {
+    electron.ipcRenderer.on("progressNotice", (_event, prgress) => {
+      callback(prgress);
+    });
   }
 };
 if (process.contextIsolated) {
@@ -17,4 +25,3 @@ if (process.contextIsolated) {
   window.electron = preload.electronAPI;
   window.api = api;
 }
-//# sourceMappingURL=index.js.map

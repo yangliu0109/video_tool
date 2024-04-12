@@ -9,10 +9,14 @@ export default defineStore('config', () => {
     size: '1920x1080',
     frames: [60, 30],
     frame: 60,
-    files: [] as VideoType[]
+    files: [] as VideoType[],
+    videoSaveDirectory: ''
   })
 
   return {
     config
   }
-})
+},
+  {
+    persist: true,
+  })

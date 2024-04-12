@@ -5,7 +5,7 @@ import Copyright from '@renderer/components/Copyright.vue';
 </script>
 
 <template>
-  <main class="text">
+  <main class="text">    
     <NavBar />
     <RouterView/>
     <Copyright class="mt-2"/>

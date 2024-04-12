@@ -17,5 +17,8 @@ app.use(router)
 import { createPinia } from 'pinia'
 const pinia = createPinia()
 app.use(pinia)
+//pnina持久化
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+pinia.use(piniaPluginPersistedstate)
 
 app.mount('#app')
