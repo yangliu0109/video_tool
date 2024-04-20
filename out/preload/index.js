@@ -8,10 +8,18 @@ const api = {
   selectDirectory: () => {
     return electron.ipcRenderer.invoke("selectDirectory");
   },
-  progressNotice: (callback) => {
-    electron.ipcRenderer.on("progressNotice", (_event, prgress) => {
-      callback(prgress);
+  // progressNotice: (callback: (prgress: number) => void) => {
+  //   ipcRenderer.on('progressNotice', (_event: IpcRendererEvent, prgress: number) => {
+  //     callback(prgress)
+  //   })
+  // },
+  mainProcessNotice: (callback) => {
+    electron.ipcRenderer.on("mainProcessNotice", (_event, type, options) => {
+      callback(type, options);
     });
+  },
+  stop: () => {
+    electron.ipcRenderer.invoke("stop");
   }
 };
 if (process.contextIsolated) {

@@ -1,37 +1,56 @@
 "use strict";
 const electron = require("electron");
-const path$1 = require("path");
+const path = require("path");
 const utils = require("@electron-toolkit/utils");
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg");
-const ffmpeg = require("fluent-ffmpeg");
+const ffmpeg$1 = require("fluent-ffmpeg");
 const ffprobePath = require("@ffprobe-installer/ffprobe");
-const icon = path$1.join(__dirname, "../../resources/icon.png");
-const path = require("path");
-ffmpeg.setFfmpegPath(ffmpegPath.path);
-ffmpeg.setFfprobePath(ffprobePath.path);
+const fs = require("fs");
+const icon = path.join(__dirname, "../../resources/icon.png");
+ffmpeg$1.setFfmpegPath(ffmpegPath.path);
+ffmpeg$1.setFfprobePath(ffprobePath.path);
 class Ffmpeg {
   constructor(_event, options) {
     this._event = _event;
     this.options = options;
-    this.ffmpeg = ffmpeg(this.options.file.path);
+    this.ffmpeg = ffmpeg$1(this.options.file.path);
     this.window = electron.BrowserWindow.fromWebContents(this._event.sender);
   }
   ffmpeg;
   window;
   processEvent(progress) {
-    this.window.webContents.send("progressNotice", progress.percent);
+    this.window.webContents.send("mainProcessNotice", "progress", progress.percent);
   }
   error(err) {
     console.log("An error occurred: " + err.message);
   }
   end() {
+    this.window.webContents.send("mainProcessNotice", "end");
     console.log("Processing finished !");
+  }
+  stop() {
+    try {
+      this.ffmpeg.kill("SIGKILL");
+      this.window.webContents.send("mainProcessNotice", "stop");
+      console.log("Processing stop !");
+    } catch (error) {
+    }
   }
   getSaveFilePath() {
     const info = path.parse(this.options.file.name);
     return path.join(this.options.saveDirectory, info.name + "_" + this.options.size + "_" + this.options.fps + info.ext);
   }
+  vaildDirecroty() {
+    if (fs.existsSync(this.options.saveDirectory))
+      return true;
+    else
+      return false;
+  }
   run() {
+    if (!this.vaildDirecroty()) {
+      this.window.webContents.send("mainProcessNotice", "directoryCheck", "目录不存在");
+      return;
+    }
     this.ffmpeg.fps(this.options.fps).size(this.options.size).videoCodec("libx264").on("error", this.error.bind(this)).on("end", this.end.bind(this)).on("progress", this.processEvent.bind(this)).save(this.getSaveFilePath());
   }
 }
@@ -42,12 +61,18 @@ const selectDirectory = async () => {
   });
   return res.canceled === false ? res.filePaths[0] : "";
 };
+let ffmpeg = null;
 electron.ipcMain.handle("compress", async (_event, options) => {
+  console.log(options);
   const compress = new Ffmpeg(_event, options);
+  ffmpeg = compress;
   compress.run();
 });
 electron.ipcMain.handle("selectDirectory", async (_event) => {
   return selectDirectory();
+});
+electron.ipcMain.handle("stop", async (_event) => {
+  ffmpeg?.stop();
 });
 function createWindow() {
   const mainWindow = new electron.BrowserWindow({
@@ -62,7 +87,7 @@ function createWindow() {
     y: 10,
     ...process.platform === "linux" ? { icon } : {},
     webPreferences: {
-      preload: path$1.join(__dirname, "../preload/index.js"),
+      preload: path.join(__dirname, "../preload/index.js"),
       sandbox: false
     }
   });
@@ -76,7 +101,7 @@ function createWindow() {
   if (utils.is.dev && process.env["ELECTRON_RENDERER_URL"]) {
     mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"]);
   } else {
-    mainWindow.loadFile(path$1.join(__dirname, "../renderer/index.html"));
+    mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
   }
 }
 electron.app.whenReady().then(() => {

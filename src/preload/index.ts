@@ -1,6 +1,6 @@
 import { IpcRendererEvent, contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { CompressOptions } from '@/renderer/types'
+import {CompressOptions} from '../renderer/src/types'
 
 // Custom APIs for renderer
 const api = {
@@ -14,11 +14,14 @@ const api = {
   //   ipcRenderer.on('progressNotice', (_event: IpcRendererEvent, prgress: number) => {
   //     callback(prgress)
   //   })
-  // }
-  mainProcessNotice: (callback: (type: 'end' | 'progress' | 'error', options: any) => void) => {
-    ipcRenderer.on('mainProcessNotice', (_event: IpcRendererEvent, type: 'end' | 'progress' | 'error', options: any) => {
+  // },
+  mainProcessNotice: (callback: (type: 'end' | 'progress' | 'error' | 'directoryCheck'  | 'stop', options: any) => void) => {
+    ipcRenderer.on('mainProcessNotice', (_event: IpcRendererEvent, type: 'end' | 'progress' | 'error' | 'directoryCheck'  | 'stop', options: any) => {
       callback(type, options)
     })
+  },
+  stop: () => {
+    ipcRenderer.invoke('stop')
   }
 }
 

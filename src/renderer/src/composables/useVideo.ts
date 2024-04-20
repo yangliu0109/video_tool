@@ -1,4 +1,4 @@
-import { ElMessageBox, UploadRequestOptions } from 'element-plus';
+import { ElMessage, UploadRequestOptions } from 'element-plus';
 import useConfigStroe from '@renderer/store/useConfigStroe';
 import { VideoState, VideoType } from '@renderer/types';
 
@@ -14,8 +14,10 @@ export default () => {
 
     const remove = async (index:number) => {
         try {
-            console.log(index);
-            
+            if(config.files[index].state === VideoState.RUN) {
+                ElMessage.warning('请等待视频压缩完成')
+                return
+            }            
             // await ElMessageBox.confirm('确定删除吗？')
             config.files.splice(index, 1)
         } catch (error) {
@@ -26,6 +28,13 @@ export default () => {
         config.files = []
     }
 
+    const resetAll = () => {
+        config.files.forEach(item => {
+            item.progress = 0;
+            item.state = VideoState.READY;
+        })
+    }
+
     const bgColor = (video: VideoType) => {
         return {
           [VideoState.RUN]: '#F9F871',
@@ -33,5 +42,5 @@ export default () => {
           [VideoState.FINNISH]: '#4FFBDF'
         } [video.state]
       }
-    return {addFile, remove, removeAll,bgColor}
+    return {addFile, remove, removeAll,bgColor, resetAll}
 }

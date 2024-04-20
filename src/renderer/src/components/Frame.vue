@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import useConfigStroe from '@renderer/store/useConfigStroe';
 
 const { config } = useConfigStroe()
-const frame = ref(60)
 </script>
 
 <template>

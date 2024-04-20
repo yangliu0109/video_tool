@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {CloseOne} from '@icon-park/vue-next';
-import {VideoState, VideoType} from '@renderer/types';
-import { computed, ref } from 'vue';
+import { VideoType} from '@renderer/types';
 import useVideo from '@renderer/composables/useVideo'
 
 const {video} = defineProps<{video: VideoType, index:number}>()
@@ -31,7 +30,7 @@ const { remove, bgColor } = useVideo()
   content:'';
   @apply bg-yellow-500 absolute top-0 bottom-0 left-0 right-0 z-0 rounded-lg;
   width: var(--process);
-  /* background-color: var(--bgColor) */
+  background-color: var(--bgColor)
 }
 
 .icon {

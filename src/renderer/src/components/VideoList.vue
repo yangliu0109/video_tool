@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import VideoItem from '@renderer/components/VideItem.vue'
 import useConfigStroe from '@renderer/store/useConfigStroe';
 

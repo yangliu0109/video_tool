@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {computed, ref} from 'vue'
+import {computed} from 'vue'
 import useConfigStroe from '@renderer/store/useConfigStroe';
 import useFps from '@renderer/composables/useFps';
-import DataType from '@renderer/types';
+import {DataType} from '@renderer/types';
 import {CloseOne} from '@icon-park/vue-next';
 
 const { config } = useConfigStroe()
@@ -43,4 +43,4 @@ const {add, newValue, remove} = useFps();
   .delIcon {
     @apply text-slate-300 hover:text-red-500 hover:scale-125 cursor-pointer duration-300
   }
-</style>@renderer/composables/useFps
+</style>
