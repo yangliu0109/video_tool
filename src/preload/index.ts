@@ -15,9 +15,9 @@ const api = {
   //     callback(prgress)
   //   })
   // },
-  mainProcessNotice: (callback: (type: 'end' | 'progress' | 'error' | 'directoryCheck'  | 'stop', options: any) => void) => {
-    ipcRenderer.on('mainProcessNotice', (_event: IpcRendererEvent, type: 'end' | 'progress' | 'error' | 'directoryCheck'  | 'stop', options: any) => {
-      callback(type, options)
+  mainProcessNotice: (callback: (type: 'end' | 'progress' | 'error' | 'directoryCheck'  | 'stop', options: any, path: string) => void) => {
+    ipcRenderer.on('mainProcessNotice', (_event: IpcRendererEvent, type: 'end' | 'progress' | 'error' | 'directoryCheck'  | 'stop', options: any,path: string) => {
+      callback(type, options ,path)
     })
   },
   stop: () => {

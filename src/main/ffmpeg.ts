@@ -5,8 +5,8 @@ import ffprobePath from '@ffprobe-installer/ffprobe';
 import path from "path";
 import {CompressOptions} from '../renderer/src/types'
 import { existsSync } from "fs";
-ffmpeg.setFfmpegPath(ffmpegPath.path);
-ffmpeg.setFfprobePath(ffprobePath.path);
+ffmpeg.setFfmpegPath(ffmpegPath.path.replace('app.asar', 'app.asar.unpacked'))
+ffmpeg.setFfprobePath(ffprobePath.path.replace('app.asar', 'app.asar.unpacked'))
 
 export default class Ffmpeg {
     ffmpeg: ffmpeg.FfmpegCommand
@@ -20,22 +20,22 @@ export default class Ffmpeg {
     }
 
     processEvent(progress){
-        this.window.webContents.send('mainProcessNotice', 'progress', progress.percent)
-        // console.log('Processing: ' + progress.percent + '% done');
+        this.window.webContents.send('mainProcessNotice', 'progress', progress.percent, this.options.file.path)
+        console.log(progress);
     }
     error(err){
         
         console.log('An error occurred: ' + err.message);
     }
     end(){
-        this.window.webContents.send('mainProcessNotice', 'end')
+        this.window.webContents.send('mainProcessNotice', 'end','' ,this.options!.file.path)
         console.log('Processing finished !');
     }
 
     stop(){
         try {
             this.ffmpeg.kill('SIGKILL')
-            this.window.webContents.send('mainProcessNotice', 'stop')
+            this.window.webContents.send('mainProcessNotice', 'stop','' ,this.options!.file.path)
             console.log('Processing stop !');
         } catch (error) {
             

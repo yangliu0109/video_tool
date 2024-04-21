@@ -21,29 +21,29 @@ export default () => {
   }
 
   const progressNotice = () => {
-    window.api.mainProcessNotice((type: 'end' | 'progress' | 'error' | 'directoryCheck'  | 'stop', data: any) => {
+    window.api.mainProcessNotice((type: 'end' | 'progress' | 'error' | 'directoryCheck'  | 'stop', data: any, path: string) => {
+      const video = config.files.find((video) => video.path === path)
       switch(type) {
         case 'end':
-          video.value!.progress = 100
-          video.value!.state = VideoState.FINNISH
+          
+          video!.progress = 100
+          video!.state = VideoState.FINNISH
           isRun.value = false
           compress();
           break;
-        case 'progress':
-          console.log('progress!!');
-          
-          video.value!.progress = data
+        case 'progress':          
+          video!.progress = data
           break;
         case 'error':
           break;
         case 'directoryCheck': 
-          video.value!.state = VideoState.READY
+          video!.state = VideoState.READY
           ElMessage.warning({message: data, duration: 3000, grouping: true})
           break;
         case 'stop': 
           isRun.value = false
-          video.value!.state = VideoState.READY
-          video.value!.progress = 0
+          video!.state = VideoState.READY
+          video!.progress = 0
           break;
       }
     })
@@ -61,7 +61,6 @@ export default () => {
   }
 
   const stop = () => {
-
     window.api.stop()
   }
 

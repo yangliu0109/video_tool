@@ -9,7 +9,7 @@ declare global {
       selectDirectory: () => Promise<any>,
       stop: () => void,
       // progressNotice: (callback: (progress:numbre) => void) => void
-      mainProcessNotice:  (callback: (type: 'end' | 'progress' | 'error' | 'directoryCheck' | 'stop', options: any) => void) => void
+      mainProcessNotice:  (callback: (type: 'end' | 'progress' | 'error' | 'directoryCheck' | 'stop', options: any, path: string) => void) => void
     }
   }
 }
