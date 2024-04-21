@@ -22,8 +22,7 @@ function createWindow(): void {
       sandbox: false
     }
   })
-//打开调试框
-mainWindow.webContents.openDevTools()
+
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
