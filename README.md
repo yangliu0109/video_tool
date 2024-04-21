@@ -19,7 +19,7 @@ VideoTool的主要特点包括：
 ## 安装
 
 确保你已经安装了以下软件：
-- [Node.js](https://nodejs.org/)（版本 >= 18.0.0）
+- [Node.js](https://nodejs.org/)（版本 >= 18.12.0）
 - [pnpm](https://pnpm.io/)（版本 >= 8.15.1）
 
 然后，执行以下命令来安装VideoTool的依赖：
