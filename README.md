@@ -1,6 +1,5 @@
 # VideoTool视频转码工具
 
-![VideoTool Logo][]
 
 VideoTool是一个开源的视频转码工具，旨在提供简单易用的功能来压缩视频尺寸、改变视频帧率以及同时处理多个任务。它采用了Node.js、Electron、Vue 3、TypeScript和Vite等技术。😎
 
