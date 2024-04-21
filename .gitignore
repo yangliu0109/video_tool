@@ -4,9 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 **/*.mp4
-/out
+out/
 node_modules/
-
+pnpm-lock.yaml
 ### STS ###
 .apt_generated
 .classpath
